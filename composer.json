@@ -1,0 +1,5 @@
+{
+    "require": {
+        "diversen/parse-argv": "v2.0.1"
+    }
+}

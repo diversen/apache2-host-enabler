@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+
+include_once "vendor/autoload.php";
+include_once dirname(__FILE__) . "/Apache2.php";
+
+use Diversen\ParseArgv;
+use Diversen\Apache2;
+
+$p = new ParseArgv();
+
+
+$error = null;
+if (!isset($p->values[0])) {
+    $error = 'Specify a hostname';
+} else {
+    $hostname = $p->values[0];
+}
+
+if (isset($p->flags['enable'])) {
+    $command = 'enable';
+} else if (isset($p->flags['disable'])) {
+    $command = 'disable';    
+} else {
+    $error = 'Specify enable or disable as a flag';
+}
+
+if ($error) {
+    print($error . "\n");
+} else {
+
+    if ($command == 'enable') {
+        Apache2::enableSite($hostname);
+    }
+
+    if ($command == 'disable') {
+        Apache2::disableSite($hostname);
+    }
+}
