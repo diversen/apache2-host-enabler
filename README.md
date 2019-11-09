@@ -13,16 +13,14 @@ Only tested on Ubuntu, and it may not work for your setup.
 
 ## Install
 
-It requires the ssl-cert package. Because it uses the /etc/ssl/certs/ssl-cert-snakeoil.pem
-
-    sudo apt install ssl-cert
-
     cd ~
 
     git clone https://github.com/diversen/apache2-host-enabler
 
     cd apache2-host-enabler/
 
+Adding a single dependency for parsing `argv`
+    
     composer install
 
 Using certbot you can add ssl certificate and enable `https`:
