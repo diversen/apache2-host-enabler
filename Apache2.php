@@ -13,18 +13,24 @@ class Apache2 {
     private static function createLogs($hostname) {
         $cwd = getcwd();
 
-        self::execCommand("mkdir -p $cwd/" . self::$logDir);
-        self::execCommand("mkdir -p $cwd/" . self::$htdocsDir);
+        $log_dir = "$cwd/" . self::$logDir;
+        $htdocs_dir = "$cwd/" . self::$htdocsDir;
+
+        self::execCommand("mkdir -p $log_dir");
+        self::execCommand("mkdir -p $htdocs_dir");
 
         $test_file = <<<EOF
 <?php 
 
 echo "hello world from $hostname";
 EOF;
-        file_put_contents("$cwd/" . self::$htdocsDir . "/index.php", $test_file);
+
+        if (!file_exists($htdocs_dir . "/index.php")) {
+            file_put_contents($htdocs_dir . "/index.php", $test_file);
+        }
         
-        $access_log = $cwd . "/" . self::$logDir ."/access.log";
-        $error_log = $cwd . "/" . self::$logDir . "/error.log";
+        $access_log = $log_dir ."/access.log";
+        $error_log = $log_dir . "/error.log";
         
         touch($access_log);
         touch($error_log);
