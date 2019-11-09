@@ -27,6 +27,10 @@ Using certbot you can add ssl certificate and enable `https`:
 
     sudo certbot --apache
 
+Install certbot: 
+
+See: https://certbot.eff.org/all-instructions
+
 
 ## Usage
 
@@ -35,6 +39,10 @@ Enable:
     cd somesite.com
 
     ~/apache2-host-enabler/a2host --enable somesite.com
+
+If you need SSL:
+
+    sudo certbot --apache
 
 Disable:
 
