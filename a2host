@@ -25,12 +25,18 @@ if (isset($p->flags['enable'])) {
     $error = 'Specify enable or disable as a flag';
 }
 
+$options = [];
+if (isset($p->flags['htdocs'])) {
+    $options['htdocs'] = $p->flags['htdocs'];
+}
+
+
 if ($error) {
     print($error . "\n");
 } else {
 
     if ($command == 'enable') {
-        Apache2::enableSite($hostname);
+        Apache2::enableSite($hostname, $options);
     }
 
     if ($command == 'disable') {

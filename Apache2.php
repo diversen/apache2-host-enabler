@@ -52,7 +52,11 @@ EOF;
     /**
      * 
      */
-    public static function enableSite($hostname, $https = true) {
+    public static function enableSite($hostname, $options = []) {
+
+        if (isset($options['htdocs'])) {
+            self::$htdocsDir = $options['htdocs'];
+        }
         
         // Need root
         self::needRoot();
@@ -61,7 +65,7 @@ EOF;
         self::createLogs($hostname);
         
         // Get configuration
-        $apache2_conf = self::getA2Conf($hostname, $https);
+        $apache2_conf = self::getA2Conf($hostname, $options);
 
         // Create tmp host 
         $tmp_file = "/tmp/$hostname";

@@ -38,7 +38,9 @@ Enable:
 
     cd somesite.com
 
-    ~/apache2-host-enabler/a2host --enable somesite.com
+    ~/apache2-host-enabler/a2host --enable --htdocs=www somesite.com
+
+If the flag htdocs is not set then the default htdocs name is `htdocs`
 
 If you need SSL:
 
