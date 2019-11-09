@@ -1,6 +1,6 @@
 # apache2-host-enabler
 
-Enable and disable hosts on Linux (Only tested on Ubuntu)
+Enable and disable virtual hosts on Linux (Only tested on Ubuntu)
 
 It only works for apache2 version >= 2.4.x
 
@@ -47,4 +47,3 @@ Disable:
 License:
 
 MIT
-
