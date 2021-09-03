@@ -15,7 +15,7 @@ Only tested on Ubuntu, and it may not work for your setup.
 
 You can also just clone this repo and build it - or copy it from the repo. 
 
-    wget https://github.com/diversen/apache2-host-enabler/blob/master/a2host.phar
+    wget https://github.com/diversen/apache2-host-enabler/raw/master/a2host.phar
 
     cp a2host.phar /usr/local/bin/a2host.phar
 
@@ -27,7 +27,15 @@ You will need to have this great tool installed: https://github.com/clue/phar-co
 
     git clone https://github.com/diversen/apache2-host-enabler 
 
+    cd apache2-host-enabler 
+
+    composer install
+
+    cd ..
+
     phar-composer build apache2-host-enabler a2host.phar
+
+`a2host.phar` then created.
 
 ## Usage
 
@@ -40,6 +48,8 @@ Enable:
     a2host.phar --enable --htdocs=www test.somesite.com
 
 If the flag htdocs is not set then the default htdocs name is `htdocs`
+
+After the host has been enabled you can visit: http://test.somesite.com
 
 Disable:
 

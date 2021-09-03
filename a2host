@@ -9,10 +9,32 @@ use Diversen\Apache2;
 
 $p = new ParseArgv();
 
+$help_message = <<<EOF
+Enable:
+
+    mkdir test.somesite.com
+
+    cd test.somesite.com
+
+    a2host.phar --enable --htdocs=www test.somesite.com
+
+If the flag htdocs is not set then the default htdocs name is `htdocs`
+
+After the host has been enabled you can visit: http://test.somesite.com
+
+Disable:
+
+    cd somesite.com
+
+    a2host.phar --disable somesite.com
+
+This does not delete any files. It just disables the host. 
+EOF;
+
 
 $error = null;
 if (!isset($p->values[0])) {
-    $error = 'Specify a hostname';
+    $error = true;
 } else {
     $hostname = $p->values[0];
 }
@@ -22,7 +44,7 @@ if (isset($p->flags['enable'])) {
 } else if (isset($p->flags['disable'])) {
     $command = 'disable';    
 } else {
-    $error = 'Specify enable or disable as a flag';
+    $error = true;
 }
 
 $options = [];
@@ -31,7 +53,7 @@ if (isset($p->flags['htdocs'])) {
 }
 
 
-if ($error) {
+if ($error) { 
     print($error . "\n");
 } else {
 
