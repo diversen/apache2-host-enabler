@@ -4,24 +4,56 @@ Enable and disable virtual hosts on Linux (Only tested on Ubuntu)
 
 It only works for apache2 version >= 2.4.x
 
-It creates the configuration file, and add the host to /etc/hosts, 
+It creates the apache2 configuration file, and add the host to /etc/hosts, 
 and then enable the configuration.
 
-It also creates logs/ and htdocs/ dir.
+It also creates `logs/` and `htdocs/` dir.
 
 Only tested on Ubuntu, and it may not work for your setup. 
 
-## Install
+## Download phar
 
-    cd ~
+You can also just clone this repo and build it - or copy it from the repo. 
 
-    git clone https://github.com/diversen/apache2-host-enabler
+    wget https://github.com/diversen/apache2-host-enabler/a2host.phar
 
-    cd apache2-host-enabler/
+    cp a2host.phar /usr/local/bin/a2host.phar
 
-Adding a single dependency for parsing `argv`
-    
-    composer install
+    chmod +x /usr/local/bin/a2host.phar
+
+## Or Build phar
+
+You will need to have this great tool installed:
+
+https://github.com/clue/phar-composer
+
+    git clone https://github.com/diversen/apache2-host-enabler 
+
+    phar-composer build apache2-host-enabler a2host.phar
+
+## Usage
+
+Enable:
+
+    mkdir test.somesite.com
+
+    cd test.somesite.com
+
+    a2host.phar --enable --htdocs=www test.somesite.com
+
+If the flag htdocs is not set then the default htdocs name is `htdocs`
+
+If you need SSL (and if you have installed certbot):
+
+    sudo certbot --apache
+
+Disable:
+
+    cd somesite.com
+
+    a2host.phar --disable somesite.com
+
+## https
 
 Using certbot you can add ssl certificate and enable `https`:
 
@@ -32,26 +64,5 @@ Install certbot:
 See: https://certbot.eff.org/all-instructions
 
 
-## Usage
 
-Enable:
-
-    cd somesite.com
-
-    ~/apache2-host-enabler/a2host --enable --htdocs=www somesite.com
-
-If the flag htdocs is not set then the default htdocs name is `htdocs`
-
-If you need SSL:
-
-    sudo certbot --apache
-
-Disable:
-
-    cd somesite.com
-
-    ~/apache2-host-enabler/a2host --disable somesite.com
-
-License:
-
-MIT
+License: MIT

@@ -1,5 +1,8 @@
 {
     "require": {
         "diversen/parse-argv": "v2.0.1"
-    }
+    },
+        "bin": [
+        	"a2host"
+    ]
 }

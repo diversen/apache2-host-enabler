@@ -123,7 +123,7 @@ EOF;
     public static function needRoot($str = '') {
 
         $output = '';
-        $output.= "Current command needs to be run as root. E.g. with sudo: ";
+        $output.= "Current command needs to be run as root. E.g.with sudo ";
         if (!empty($str)) {
             $output.="\nsudo $str";
         }
