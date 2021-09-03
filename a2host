@@ -10,6 +10,10 @@ use Diversen\Apache2;
 $p = new ParseArgv();
 
 $help_message = <<<EOF
+apache2-host-enabler
+
+A simple tool for creating, enabling, and disabling apache2 virtual host 
+
 Enable:
 
     mkdir test.somesite.com
@@ -28,7 +32,11 @@ Disable:
 
     a2host.phar --disable somesite.com
 
-This does not delete any files. It just disables the host. 
+This does not delete any files. It just disables the host.
+
+Enable https: 
+    
+    sudo certbot --apache
 EOF;
 
 
@@ -54,7 +62,7 @@ if (isset($p->flags['htdocs'])) {
 
 
 if ($error) { 
-    print($error . "\n");
+    print($help_message . "\n");
 } else {
 
     if ($command == 'enable') {
