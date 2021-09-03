@@ -20,7 +20,7 @@ Enable:
 
     cd test.somesite.com
 
-    a2host.phar --enable --htdocs=www test.somesite.com
+    sudo a2host.phar --enable --htdocs=www test.somesite.com
 
 If the flag htdocs is not set then the default htdocs name is `htdocs`
 
@@ -30,7 +30,7 @@ Disable:
 
     cd somesite.com
 
-    a2host.phar --disable somesite.com
+    sudo a2host.phar --disable somesite.com
 
 This does not delete any files. It just disables the host.
 

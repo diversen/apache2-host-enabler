@@ -17,9 +17,9 @@ You can also just clone this repo and build it - or copy it from the repo.
 
     wget https://github.com/diversen/apache2-host-enabler/raw/master/a2host.phar
 
-    cp a2host.phar /usr/local/bin/a2host.phar
+    sudo cp a2host.phar /usr/local/bin/a2host.phar
 
-    chmod +x /usr/local/bin/a2host.phar
+    sudo chmod +x /usr/local/bin/a2host.phar
 
 ## Or Build phar
 
@@ -45,7 +45,7 @@ Enable:
 
     cd test.somesite.com
 
-    a2host.phar --enable --htdocs=www test.somesite.com
+    sudo a2host.phar --enable --htdocs=www test.somesite.com
 
 If the flag htdocs is not set then the default htdocs name is `htdocs`
 
@@ -55,7 +55,7 @@ Disable:
 
     cd somesite.com
 
-    a2host.phar --disable somesite.com
+    sudo a2host.phar --disable somesite.com
 
 This does not delete any files. It just disables the host. 
 
