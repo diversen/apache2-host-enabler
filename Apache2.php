@@ -10,7 +10,7 @@ class Apache2 {
     /**
      * Creates logs in cwd
      */
-    private static function createLogs($hostname) {
+    private static function createLogs($hostname, $www_user) {
         $cwd = getcwd();
 
         $log_dir = "$cwd/" . self::$logDir;
@@ -34,6 +34,7 @@ EOF;
         
         touch($access_log);
         touch($error_log);
+
     }
 
     /**
@@ -62,7 +63,7 @@ EOF;
         self::needRoot();
 
         // Create logs
-        self::createLogs($hostname);
+        self::createLogs($hostname, $www_user);
         
         // Get configuration
         $apache2_conf = self::getA2Conf($hostname, $options);
@@ -97,10 +98,37 @@ EOF;
 
         // Reload configuration
         self::execCommand("/etc/init.d/apache2 reload");
+        self::setPerms();
+    }
 
+    public static function setPerms() {
+        
         // Chown to user running the sudo command
-        $user = get_current_user();
-        self::execCommand("chown -R $user:$user .");
+        // https://serverfault.com/a/89401/142195
+        $command = "sudo bash -c 'echo \$SUDO_USER'";
+        $real_user = shell_exec($command);
+        if (!$real_user) {
+            echo "Could not find real user running sudo\n";
+            exit(128);
+        }
+
+        $real_user = trim($real_user);
+        self::execCommand("chown -R $real_user:$real_user .");
+
+        // https://serverfault.com/a/756049/142195
+        $command = "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1";
+        $www_user = shell_exec($command);
+        if (!$www_user) {
+            echo "Could not find apache2 running user\n";
+            exit(128);
+        }
+
+        $www_user = trim($www_user);
+
+        $cwd = getcwd();
+        $log_dir = "$cwd/" . self::$logDir;
+
+        self::execCommand("chown -R $www_user:$www_user $log_dir");
     }
 
     /**

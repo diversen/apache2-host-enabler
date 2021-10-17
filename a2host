@@ -39,7 +39,6 @@ Enable https:
     sudo certbot --apache
 EOF;
 
-
 $error = null;
 if (!isset($p->values[0])) {
     $error = true;
