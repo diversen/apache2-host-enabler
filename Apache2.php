@@ -2,7 +2,8 @@
 
 namespace Diversen;
 
-class Apache2 {
+class Apache2
+{
 
 
     private static $logDir = 'logs';
@@ -10,7 +11,8 @@ class Apache2 {
     /**
      * Creates logs in cwd
      */
-    private static function createLogs($hostname, $www_user) {
+    private static function createLogs($hostname, $www_user)
+    {
         $cwd = getcwd();
 
         $log_dir = "$cwd/" . self::$logDir;
@@ -22,49 +24,50 @@ class Apache2 {
         $test_file = <<<EOF
 <?php 
 
-echo "hello world from $hostname";
+echo "Hello World from $hostname";
 EOF;
 
         if (!file_exists($htdocs_dir . "/index.php")) {
             file_put_contents($htdocs_dir . "/index.php", $test_file);
         }
-        
-        $access_log = $log_dir ."/access.log";
+
+        $access_log = $log_dir . "/access.log";
         $error_log = $log_dir . "/error.log";
-        
+
         touch($access_log);
         touch($error_log);
-
     }
 
     /**
      * Get apache2 configuration by servername and scheme (http or)
      */
-    private static function getA2Conf($SERVER_NAME, $https = true) {
+    private static function getA2Conf($SERVER_NAME, $https = true)
+    {
         $current_dir = getcwd();
         $DOCUMENT_ROOT = $current_dir . "/" . self::$htdocsDir;
         $APACHE_LOG_ROOT = $current_dir . "/" . self::$logDir;
 
         $apache_str = self::getConf($SERVER_NAME, $DOCUMENT_ROOT, $APACHE_LOG_ROOT);
- 
+
         return $apache_str;
     }
 
     /**
      * 
      */
-    public static function enableSite($hostname, $options = []) {
+    public static function enableSite($hostname, $options = [])
+    {
 
         if (isset($options['htdocs'])) {
             self::$htdocsDir = $options['htdocs'];
         }
-        
+
         // Need root
         self::needRoot();
 
         // Create logs
         self::createLogs($hostname, $www_user);
-        
+
         // Get configuration
         $apache2_conf = self::getA2Conf($hostname, $options);
 
@@ -73,19 +76,19 @@ EOF;
 
         // Put contents in tmp file
         file_put_contents($tmp_file, $apache2_conf);
-        
+
         // Real apache2 conf file
         $apache2_conf_file = "/etc/apache2/sites-available/$hostname.conf";;
 
         // Create real apache2 conf file
         self::execCommand("cp -f /tmp/$hostname $apache2_conf_file");
-        
+
         // Enable host
         self::execCommand("a2ensite $hostname");
 
         // Add host to /etc/hosts
         $hosts_file_str = file_get_contents("/etc/hosts");
-        
+
         //Host string ot add to /etc/hosts
         $host_str = "127.0.0.1\t$hostname\n";
 
@@ -101,11 +104,15 @@ EOF;
         self::setPerms();
     }
 
-    public static function setPerms() {
-        
+    public static function setPerms()
+    {
+
         // Chown to user running the sudo command
         // https://serverfault.com/a/89401/142195
         $command = "sudo bash -c 'echo \$SUDO_USER'";
+
+        // Above does not work. This does work on ubuntu 20.04
+        $command = "logname";
         $real_user = shell_exec($command);
         if (!$real_user) {
             echo "Could not find real user running sudo\n";
@@ -113,7 +120,8 @@ EOF;
         }
 
         $real_user = trim($real_user);
-        self::execCommand("chown -R $real_user:$real_user .");
+        $command = "chown -R $real_user:$real_user .";
+        self::execCommand($command);
 
         // https://serverfault.com/a/756049/142195
         $command = "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1";
@@ -134,8 +142,9 @@ EOF;
     /**
      * Check if user is root
      */
-    public static function isRoot() {
-        if (!function_exists('posix_getuid')){
+    public static function isRoot()
+    {
+        if (!function_exists('posix_getuid')) {
             return true;
         }
         if (0 == posix_getuid()) {
@@ -148,12 +157,13 @@ EOF;
     /**
      * Check if user is root
      */
-    public static function needRoot($str = '') {
+    public static function needRoot($str = '')
+    {
 
         $output = '';
-        $output.= "Current command needs to be run as root. E.g.with sudo ";
+        $output .= "Current command needs to be run as root. E.g.with sudo ";
         if (!empty($str)) {
-            $output.="\nsudo $str";
+            $output .= "\nsudo $str";
         }
 
         if (!self::isRoot()) {
@@ -163,7 +173,8 @@ EOF;
         return 0;
     }
 
-    public static function execCommand($command) {
+    public static function execCommand($command)
+    {
         passthru($command);
     }
 
@@ -173,7 +184,8 @@ EOF;
      * 
      * @param array $options only options is $options[sitename] 
      */
-    public static function disableSite($hostname) {
+    public static function disableSite($hostname)
+    {
 
         self::needRoot();
 
@@ -194,7 +206,7 @@ EOF;
             if (strstr($val, $host_search)) {
                 continue;
             } else {
-                $host_file_str.=$val;
+                $host_file_str .= $val;
             }
         }
         file_put_contents("/tmp/hosts", $host_file_str);
@@ -208,7 +220,8 @@ EOF;
      * 
      * @return string $version e.g. 2.4.6
      */
-    public static function getVersion() {
+    public static function getVersion()
+    {
         exec('apache2 -v', $ary, $ret);
         $line = $ary[0];
         $ary = explode(':', $line);
@@ -226,7 +239,8 @@ EOF;
      * @param string $APACHE_LOG_ROOT
      * @return string $conf a apache2 conf file
      */
-    public static function getConf($SERVER_NAME, $DOCUMENT_ROOT, $APACHE_LOG_ROOT) {
+    public static function getConf($SERVER_NAME, $DOCUMENT_ROOT, $APACHE_LOG_ROOT)
+    {
 
         return <<<EOD
 <VirtualHost *:80>
@@ -271,4 +285,3 @@ deny from all
 EOD;
     }
 }
-
