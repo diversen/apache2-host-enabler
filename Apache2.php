@@ -65,6 +65,12 @@ EOF;
         // Need root
         self::needRoot();
 
+        $www_user = self::getWwwUser();
+        if (!$www_user) {
+            echo "Could not find apache2 running user\n";
+            exit(128);
+        }
+
         // Create logs
         self::createLogs($hostname, $www_user);
 
@@ -123,20 +129,29 @@ EOF;
         $command = "chown -R $real_user:$real_user .";
         self::execCommand($command);
 
-        // https://serverfault.com/a/756049/142195
-        $command = "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1";
-        $www_user = shell_exec($command);
+        $www_user = self::getWwwUser();
         if (!$www_user) {
             echo "Could not find apache2 running user\n";
             exit(128);
         }
 
-        $www_user = trim($www_user);
-
         $cwd = getcwd();
         $log_dir = "$cwd/" . self::$logDir;
 
         self::execCommand("chown -R $www_user:$www_user $log_dir");
+    }
+
+    public static function getWwwUser()
+    {
+        // https://serverfault.com/a/756049/142195
+        $command = "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1";
+        $www_user = shell_exec($command);
+        if (!$www_user) {
+            return false;
+        }
+
+        $www_user = trim($www_user);
+        return $www_user;
     }
 
     /**
